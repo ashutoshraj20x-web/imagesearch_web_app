@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Pic Search - Discover Photos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #6747f5;
+            --purple-dark: #5836ed;
+            --purple-light: #f0edff;
+            --text: #15152b;
+            --muted: #71758d;
+            --border: #e8e4fa;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 5%,
+                    rgba(122, 84, 255, 0.11),
+                    transparent 34%
+                ),
+                linear-gradient(
+                    180deg,
+                    #faf9ff 0%,
+                    #ffffff 55%,
+                    #ffffff 100%
+                );
+        }
+
+        /* ---------------- HEADER ---------------- */
+
+        header {
+            width: 100%;
+            padding: 32px 40px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            text-decoration: none;
+        }
+
+        .logo-black {
+            color: #15152b;
+        }
+
+        .logo-purple {
+            color: var(--purple);
+        }
+
+        /* ---------------- HERO ---------------- */
+
+        .hero {
+            width: min(1100px, calc(100% - 40px));
+            margin: 25px auto 0;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 10px 17px;
+
+            border: 1px solid #e6ddff;
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, 0.75);
+
+            color: var(--purple);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-icon {
+            font-size: 14px;
+        }
+
+        h1 {
+            max-width: 850px;
+            margin: 30px auto 0;
+
+            font-size: clamp(45px, 6vw, 76px);
+            line-height: 0.98;
+            letter-spacing: -4px;
+            font-weight: 800;
+        }
+
+        .gradient-text {
+            background: linear-gradient(
+                90deg,
+                #6747f5,
+                #b943d6
+            );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            max-width: 650px;
+            margin: 25px auto 0;
+
+            color: var(--muted);
+
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .subtitle strong {
+            color: #596078;
+        }
+
+        /* ---------------- SEARCH ---------------- */
+
+        .search-wrapper {
+            width: min(900px, 100%);
+            margin: 36px auto 0;
+
+            padding: 7px;
+
+            display: flex;
+            align-items: center;
+
+            background: rgba(255, 255, 255, 0.95);
+
+            border: 1px solid var(--border);
+            border-radius: 19px;
+
+            box-shadow:
+                0 18px 50px rgba(65, 42, 150, 0.08),
+                0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .search-icon {
+            width: 52px;
+            height: 52px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: var(--purple);
+
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        #searchInput {
+            width: 100%;
+            height: 52px;
+
+            border: none;
+            outline: none;
+
+            background: transparent;
+
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        #searchInput::placeholder {
+            color: #9699ad;
+        }
+
+        #searchButton {
+            height: 52px;
+            padding: 0 28px;
+
+            border: none;
+            border-radius: 13px;
+
+            background: linear-gradient(
+                135deg,
+                #7050fa,
+                #6240ed
+            );
+
+            color: white;
+
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        #searchButton:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 8px 20px rgba(103, 71, 245, 0.28);
+        }
+
+        #searchButton:active {
+            transform: scale(0.98);
+        }
+
+        /* ---------------- TAGS ---------------- */
+
+        .tags {
+            margin: 25px auto 0;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+
+            gap: 9px;
+        }
+
+        .try-text {
+            margin-right: 4px;
+
+            color: #777b91;
+            font-size: 13px;
+        }
+
+        .tag {
+            border: none;
+
+            padding: 9px 15px;
+
+            border-radius: 999px;
+
+            background: var(--purple-light);
+            color: #6144e9;
+
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+        .tag:hover {
+            background: #e4deff;
+            transform: translateY(-1px);
+        }
+
+        /* ---------------- GALLERY ---------------- */
+
+        .gallery-section {
+            width: min(1120px, calc(100% - 40px));
+            margin: 42px auto 70px;
+        }
+
+        .gallery-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .gallery-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        #resultText {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .gallery {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            grid-auto-rows: 190px;
+
+            gap: 12px;
+        }
+
+        .photo-card {
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 17px;
+
+            background: #eee;
+
+            min-height: 180px;
+        }
+
+        .photo-card:nth-child(1) {
+            grid-column: span 2;
+        }
+
+        .photo-card:nth-child(4) {
+            grid-column: span 2;
+        }
+
+        .photo-card:nth-child(6) {
+            grid-column: span 2;
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            transition:
+                transform 0.5s ease,
+                filter 0.3s ease;
+        }
+
+        .photo-card:hover img {
+            transform: scale(1.06);
+        }
+
+        .photo-overlay {
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            padding: 35px 15px 14px;
+
+            background: linear-gradient(
+                transparent,
+                rgba(0, 0, 0, 0.58)
+            );
+
+            color: white;
+
+            opacity: 0;
+
+            transition: opacity 0.25s ease;
+        }
+
+        .photo-card:hover .photo-overlay {
+            opacity: 1;
+        }
+
+        .photo-author {
+            font-size: 11px;
+            opacity: 0.85;
+        }
+
+        /* ---------------- LOADING ---------------- */
+
+        .loading {
+            display: none;
+
+            min-height: 350px;
+
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+
+            gap: 15px;
+
+            color: var(--muted);
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 42px;
+            height: 42px;
+
+            border: 4px solid #e8e3ff;
+            border-top-color: var(--purple);
+
+            border-radius: 50%;
+
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ---------------- ERROR ---------------- */
+
+        .error {
+            display: none;
+
+            padding: 30px;
+
+            text-align: center;
+
+            color: #d34a4a;
+
+            background: #fff4f4;
+
+            border: 1px solid #ffdada;
+
+            border-radius: 15px;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        /* ---------------- RESPONSIVE ---------------- */
+
+        @media (max-width: 850px) {
+
+            header {
+                padding: 25px 20px;
+            }
+
+            .hero {
+                margin-top: 20px;
+            }
+
+            h1 {
+                letter-spacing: -2.5px;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 210px;
+            }
+
+            .photo-card:nth-child(n) {
+                grid-column: span 1;
+            }
+
+            .photo-card:nth-child(1),
+            .photo-card:nth-child(4),
+            .photo-card:nth-child(6) {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 22px 18px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .hero {
+                width: calc(100% - 30px);
+            }
+
+            h1 {
+                font-size: 43px;
+                line-height: 1;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .search-wrapper {
+                padding: 6px;
+                border-radius: 16px;
+            }
+
+            .search-icon {
+                width: 40px;
+            }
+
+            #searchButton {
+                padding: 0 18px;
+            }
+
+            .tags {
+                justify-content: flex-start;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+
+                padding-bottom: 4px;
+            }
+
+            .try-text {
+                flex-shrink: 0;
+            }
+
+            .tag {
+                flex-shrink: 0;
+            }
+
+            .gallery-section {
+                width: calc(100% - 30px);
+                margin-top: 35px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 230px;
+            }
+
+            .photo-card:nth-child(n) {
+                grid-column: span 1;
+            }
+
+            .photo-overlay {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+        <a href="#" class="logo">
+            <span class="logo-black">Pic</span>
+            <span class="logo-purple">Search</span>
+        </a>
+    </header>
+
+
+    <!-- ================= HERO ================= -->
+
+    <main>
+
+        <section class="hero">
+
+            <div class="badge">
+                <span class="badge-icon">✦</span>
+                AI-Powered Photo Discovery
+            </div>
+
+            <h1>
+                Search Any Photo,<br>
+                Find <span class="gradient-text">Instantly</span>
+            </h1>
+
+            <p class="subtitle">
+                Type a keyword like
+                <strong>car</strong>,
+                <strong>bike</strong>,
+                <strong>mountains</strong>
+                or
+                <strong>sunset</strong>
+                and discover beautiful related photos instantly.
+            </p>
+
+
+            <!-- SEARCH BAR -->
+
+            <form class="search-wrapper" id="searchForm">
+
+                <div class="search-icon">
+                    ⌕
+                </div>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search for car, bike, nature..."
+                    autocomplete="off"
+                />
+
+                <button type="submit" id="searchButton">
+                    Search&nbsp; →
+                </button>
+
+            </form>
+
+
+            <!-- TAGS -->
+
+            <div class="tags">
+
+                <span class="try-text">
+                    Try:
+                </span>
+
+                <button class="tag" data-query="cars">
+                    Cars
+                </button>
+
+                <button class="tag" data-query="motorcycle">
+                    Bike
+                </button>
+
+                <button class="tag" data-query="mountains">
+                    Mountains
+                </button>
+
+                <button class="tag" data-query="sunset">
+                    Sunset
+                </button>
+
+                <button class="tag" data-query="nature">
+                    Nature
+                </button>
+
+                <button class="tag" data-query="ocean">
+                    Ocean
+                </button>
+
+                <button class="tag" data-query="forest">
+                    Forest
+                </button>
+
+                <button class="tag" data-query="city">
+                    City
+                </button>
+
+                <button class="tag" data-query="animals">
+                    Animals
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= GALLERY ================= -->
+
+        <section class="gallery-section">
+
+            <div class="gallery-header">
+
+                <div class="gallery-title">
+                    Discover Photos
+                </div>
+
+                <div id="resultText">
+                    
+                </div>
+
+            </div>
+
+
+            <div id="errorBox" class="error"></div>
+
+
+            <div id="loading" class="loading">
+
+                <div class="spinner"></div>
+
+                <span>
+                    Finding beautiful photos...
+                </span>
+
+            </div>
+
+
+            <div id="gallery" class="gallery"></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        
+
+        const UNSPLASH_ACCESS_KEY =
+            "G13sqXjCTQpQn0yyuoc77WG2B_2SD6xgsWXPy8OAsP4";
+
+
+        const searchForm =
+            document.getElementById("searchForm");
+
+        const searchInput =
+            document.getElementById("searchInput");
+
+        const searchButton =
+            document.getElementById("searchButton");
+
+        const gallery =
+            document.getElementById("gallery");
+
+        const loading =
+            document.getElementById("loading");
+
+        const errorBox =
+            document.getElementById("errorBox");
+
+        const resultText =
+            document.getElementById("resultText");
+
+
+        /*
+         * =====================================================
+         * SEARCH PHOTOS
+         * =====================================================
+         */
+
+        async function searchPhotos(query) {
+
+            query = query.trim();
+
+            if (!query) {
+
+                searchInput.focus();
+
+                return;
+            }
+
+
+            // Loading ON
+
+            gallery.innerHTML = "";
+
+            errorBox.classList.remove("show");
+
+            loading.classList.add("show");
+
+            searchButton.disabled = true;
+
+            searchButton.innerHTML =
+                "Searching...";
+
+
+            try {
+
+                const url =
+                    `https://api.unsplash.com/search/photos` +
+                    `?query=${encodeURIComponent(query)}` +
+                    `&per_page=30` +
+                    `&orientation=landscape` +
+                    `&client_id=${UNSPLASH_ACCESS_KEY}`;
+
+
+                const response =
+                    await fetch(url);
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to fetch photos. Please check your API key."
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                const photos =
+                    data.results;
+
+
+                if (!photos || photos.length === 0) {
+
+                    gallery.innerHTML = "";
+
+                    errorBox.textContent =
+                        `No photos found for "${query}". Try another keyword.`;
+
+                    errorBox.classList.add("show");
+
+                    resultText.textContent =
+                        "0 photos";
+
+                    return;
+                }
+
+
+                resultText.textContent =
+                    `${photos.length} photos for "${query}"`;
+
+
+                renderPhotos(photos);
+
+
+            } catch (error) {
+
+                console.error(error);
+
+
+                errorBox.textContent =
+                    error.message ||
+                    "Something went wrong. Please try again.";
+
+                errorBox.classList.add("show");
+
+            } finally {
+
+                loading.classList.remove("show");
+
+                searchButton.disabled = false;
+
+                searchButton.innerHTML =
+                    "Search&nbsp; →";
+            }
+        }
+
+
+        /*
+         * =====================================================
+         * RENDER PHOTOS
+         * =====================================================
+         */
+
+        function renderPhotos(photos) {
+
+            gallery.innerHTML = "";
+
+
+            photos.forEach(photo => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "photo-card";
+
+
+                const image =
+                    document.createElement("img");
+
+                image.src =
+                    photo.urls.regular;
+
+                image.alt =
+                    photo.alt_description ||
+                    "Unsplash photo";
+
+                image.loading =
+                    "lazy";
+
+
+                const overlay =
+                    document.createElement("div");
+
+                overlay.className =
+                    "photo-overlay";
+
+
+                const author =
+                    document.createElement("div");
+
+                author.className =
+                    "photo-author";
+
+                author.textContent =
+                    `Photo by ${photo.user.name}`;
+
+
+                overlay.appendChild(author);
+
+                card.appendChild(image);
+
+                card.appendChild(overlay);
+
+                gallery.appendChild(card);
+
+            });
+        }
+
+
+        /*
+         * =====================================================
+         * FORM SEARCH
+         * =====================================================
+         */
+
+        searchForm.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+                searchPhotos(
+                    searchInput.value
+                );
+
+            }
+        );
+
+
+        /*
+         * =====================================================
+         * TAG SEARCH
+         * =====================================================
+         */
+
+        document
+            .querySelectorAll(".tag")
+            .forEach(tag => {
+
+                tag.addEventListener(
+                    "click",
+                    function() {
+
+                        const query =
+                            this.dataset.query;
+
+                        searchInput.value =
+                            query;
+
+                        searchPhotos(query);
+
+                    }
+                );
+
+            });
+
+
+        /*
+         * =====================================================
+         * INITIAL PHOTOS
+         * =====================================================
+         */
+
+        window.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                searchInput.value =
+                    "nature";
+
+                searchPhotos("nature");
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
